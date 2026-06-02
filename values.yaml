@@ -3,10 +3,10 @@ aegis: { enabled: true }
 talos: { enabled: true }
 gjallarhorn: { enabled: false }
 gleipnir: { enabled: false }
-forge: { enabled: true }
 
 # Console plugin registry (Grafana-style). `install` lists app plugin bundles the
 # forge console fetches + serves; `enable` drives GET /apps (visibility + apiBase).
+# These render the `forge-apps` ConfigMap (templates/forge-apps-configmap.yaml).
 console:
   install:
     - { id: aegis, bundle: "oci://ghcr.io/fromforgesoftware/aegis-console:0.1.0" }
@@ -14,3 +14,15 @@ console:
   enable:
     - { id: aegis, apiBase: "http://aegis" }
     - { id: talos, apiBase: "http://talos" }
+
+# forge subchart. consoleApps wires the forge pod to the forge-apps ConfigMap:
+# the server mounts apps.yaml and reads install[]+enable[]; an oras init-container
+# pulls each install[].bundle into the shared plugins volume. configMapName +
+# install MUST mirror the console.* values above (and the ConfigMap name).
+forge:
+  enabled: true
+  consoleApps:
+    configMapName: forge-apps
+    install:
+      - { id: aegis, bundle: "oci://ghcr.io/fromforgesoftware/aegis-console:0.1.0" }
+      - { id: talos, bundle: "oci://ghcr.io/fromforgesoftware/talos-console:0.1.0" }
