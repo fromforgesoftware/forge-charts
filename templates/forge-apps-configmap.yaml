@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: forge-apps
+  labels:
+    app.kubernetes.io/part-of: forge
+data:
+  apps.yaml: |
+    install:
+    {{- range .Values.console.install }}
+      - id: {{ .id }}
+        bundle: {{ .bundle | quote }}
+    {{- end }}
+    enable:
+    {{- range .Values.console.enable }}
+      - id: {{ .id }}
+        apiBase: {{ .apiBase | quote }}
+    {{- end }}

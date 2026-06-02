@@ -1,0 +1,16 @@
+# Toggle which platform services deploy.
+aegis: { enabled: true }
+talos: { enabled: true }
+gjallarhorn: { enabled: false }
+gleipnir: { enabled: false }
+forge: { enabled: true }
+
+# Console plugin registry (Grafana-style). `install` lists app plugin bundles the
+# forge console fetches + serves; `enable` drives GET /apps (visibility + apiBase).
+console:
+  install:
+    - { id: aegis, bundle: "oci://ghcr.io/fromforgesoftware/aegis-console:0.1.0" }
+    - { id: talos, bundle: "oci://ghcr.io/fromforgesoftware/talos-console:0.1.0" }
+  enable:
+    - { id: aegis, apiBase: "http://aegis" }
+    - { id: talos, apiBase: "http://talos" }
