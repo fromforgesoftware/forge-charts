@@ -1,0 +1,33 @@
+name: Release
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish, e.g. v0.1.0"
+        required: true
+permissions:
+  contents: read
+  packages: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      CHART_REPO: oci://ghcr.io/fromforgesoftware/charts
+    steps:
+      - uses: actions/checkout@v4
+      - name: Resolve version
+        id: v
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then RAW="${{ github.event.release.tag_name }}"; else RAW="${{ inputs.version }}"; fi
+          echo "ver=${RAW#v}" >> "$GITHUB_OUTPUT"
+      - uses: azure/setup-helm@v4
+      - name: Rewrite file:// deps to OCI, package, push
+        run: |
+          helm registry login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+          # published umbrella consumes published subcharts; committed Chart.yaml keeps file:// for local dev
+          sed -i -E 's#repository: "?file://\.\./[^/]+/deploy/helm"?#repository: "oci://ghcr.io/fromforgesoftware/charts"#' Chart.yaml
+          helm dependency update
+          helm package . --version "${{ steps.v.outputs.ver }}" --app-version "${{ steps.v.outputs.ver }}"
+          helm push forge-platform-*-${{ steps.v.outputs.ver }}.tgz ${{ env.CHART_REPO }}
