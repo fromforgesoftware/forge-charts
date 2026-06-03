@@ -1,22 +1,29 @@
-# Toggle which platform services deploy.
+# Toggle which platform services deploy. As of 4e all four apps ship console
+# remotes loaded by the forge console, so gjallarhorn/gleipnir are enabled too —
+# their installed remotes need a running backend to talk to.
 aegis: { enabled: true }
 talos: { enabled: true }
-gjallarhorn: { enabled: false }
-gleipnir: { enabled: false }
+gjallarhorn: { enabled: true }
+gleipnir: { enabled: true }
 
 # Console plugin registry (Grafana-style). `install` lists app plugin bundles the
 # forge console fetches + serves; `enable` drives GET /apps (visibility + apiBase).
 # These render the `forge-apps` ConfigMap (templates/forge-apps-configmap.yaml).
 console:
-  # Only apps with a published console bundle go in install[]; aegis is the
-  # pilot. talos/gjallarhorn/gleipnir are enabled but not yet installed, so the
-  # console renders them from its compile-time bundled plugins (hybrid fallback)
-  # until their remotes ship (Phase 4e).
+  # Phase 4e: every first-party app ships a published console bundle (its
+  # SystemJS module.js remote), so all four go in install[]. The forge host no
+  # longer bundles any compile-time plugin — the console loads each app purely
+  # from its remote.
   install:
     - { id: aegis, bundle: "oci://ghcr.io/fromforgesoftware/aegis-console:0.1.0" }
+    - { id: talos, bundle: "oci://ghcr.io/fromforgesoftware/talos-console:0.1.0" }
+    - { id: gjallarhorn, bundle: "oci://ghcr.io/fromforgesoftware/gjallarhorn-console:0.1.0" }
+    - { id: gleipnir, bundle: "oci://ghcr.io/fromforgesoftware/gleipnir-console:0.1.0" }
   enable:
     - { id: aegis, apiBase: "http://aegis" }
     - { id: talos, apiBase: "http://talos" }
+    - { id: gjallarhorn, apiBase: "http://gjallarhorn" }
+    - { id: gleipnir, apiBase: "http://gleipnir" }
 
 # forge subchart. consoleApps wires the forge pod to the forge-apps ConfigMap:
 # the server mounts apps.yaml and reads install[]+enable[]; an oras init-container
@@ -28,3 +35,6 @@ forge:
     configMapName: forge-apps
     install:
       - { id: aegis, bundle: "oci://ghcr.io/fromforgesoftware/aegis-console:0.1.0" }
+      - { id: talos, bundle: "oci://ghcr.io/fromforgesoftware/talos-console:0.1.0" }
+      - { id: gjallarhorn, bundle: "oci://ghcr.io/fromforgesoftware/gjallarhorn-console:0.1.0" }
+      - { id: gleipnir, bundle: "oci://ghcr.io/fromforgesoftware/gleipnir-console:0.1.0" }
