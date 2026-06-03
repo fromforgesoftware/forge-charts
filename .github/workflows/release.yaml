@@ -30,4 +30,4 @@ jobs:
           sed -i -E 's#repository: "?file://\.\./[^/]+/deploy/helm"?#repository: "oci://ghcr.io/fromforgesoftware/charts"#' Chart.yaml
           helm dependency update
           helm package . --version "${{ steps.v.outputs.ver }}" --app-version "${{ steps.v.outputs.ver }}"
-          helm push forge-platform-*-${{ steps.v.outputs.ver }}.tgz ${{ env.CHART_REPO }}
+          helm push "forge-platform-${{ steps.v.outputs.ver }}.tgz" ${{ env.CHART_REPO }}
