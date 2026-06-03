@@ -8,9 +8,12 @@ gleipnir: { enabled: false }
 # forge console fetches + serves; `enable` drives GET /apps (visibility + apiBase).
 # These render the `forge-apps` ConfigMap (templates/forge-apps-configmap.yaml).
 console:
+  # Only apps with a published console bundle go in install[]; aegis is the
+  # pilot. talos/gjallarhorn/gleipnir are enabled but not yet installed, so the
+  # console renders them from its compile-time bundled plugins (hybrid fallback)
+  # until their remotes ship (Phase 4e).
   install:
     - { id: aegis, bundle: "oci://ghcr.io/fromforgesoftware/aegis-console:0.1.0" }
-    - { id: talos, bundle: "oci://ghcr.io/fromforgesoftware/talos-console:0.1.0" }
   enable:
     - { id: aegis, apiBase: "http://aegis" }
     - { id: talos, apiBase: "http://talos" }
@@ -25,4 +28,3 @@ forge:
     configMapName: forge-apps
     install:
       - { id: aegis, bundle: "oci://ghcr.io/fromforgesoftware/aegis-console:0.1.0" }
-      - { id: talos, bundle: "oci://ghcr.io/fromforgesoftware/talos-console:0.1.0" }
