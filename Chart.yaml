@@ -6,7 +6,7 @@ version: 0.1.0
 appVersion: "0.1.0"
 dependencies:
   - name: aegis
-    version: "0.1.0"
+    version: "0.1.5"
     repository: "file://../aegis/deploy/helm"
     condition: aegis.enabled
   - name: talos
