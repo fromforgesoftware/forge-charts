@@ -2,11 +2,11 @@ apiVersion: v2
 name: forge-platform
 description: Umbrella chart deploying the forge platform (console + services)
 type: application
-version: 0.1.5
-appVersion: "0.1.5"
+version: 0.1.6
+appVersion: "0.1.6"
 dependencies:
   - name: aegis
-    version: "0.1.9"
+    version: "0.1.10"
     repository: "file://../aegis/deploy/helm"
     condition: aegis.enabled
   - name: talos
