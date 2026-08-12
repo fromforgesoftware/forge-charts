@@ -2,19 +2,19 @@ apiVersion: v2
 name: forge-platform
 description: Umbrella chart deploying the forge platform (console + services)
 type: application
-version: 0.1.10
-appVersion: "0.1.10"
+version: 0.1.11
+appVersion: "0.1.11"
 dependencies:
   - name: aegis
-    version: "0.1.11"
+    version: "0.1.12"
     repository: "file://../aegis/deploy/helm"
     condition: aegis.enabled
   - name: talos
-    version: "0.1.0"
+    version: "0.1.1"
     repository: "file://../talos/deploy/helm"
     condition: talos.enabled
   - name: gjallarhorn
-    version: "0.1.0"
+    version: "0.1.1"
     repository: "file://../gjallarhorn/deploy/helm"
     condition: gjallarhorn.enabled
   - name: gleipnir
@@ -22,6 +22,6 @@ dependencies:
     repository: "file://../gleipnir/deploy/helm"
     condition: gleipnir.enabled
   - name: forge
-    version: "0.1.0"
+    version: "0.1.4"
     repository: "file://../forge/deploy/helm"
     condition: forge.enabled
